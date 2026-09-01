@@ -55,7 +55,8 @@ jobs:
         if: ${{ inputs.download_iso }}
         run: repo/ci/stage.sh /work
 
-      - name: Interactive shell (tmate)
-        uses: mxschmitt/action-tmate@v3
+      - name: Interactive shell (upterm)
+        uses: lhotari/action-upterm@v1
         with:
           limit-access-to-actor: true
+          wait-timeout-minutes: 300
