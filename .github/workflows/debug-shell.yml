@@ -1,0 +1,61 @@
+name: debug-shell
+# Interactive experiment: boot Qubes OS under nested KVM on a GitHub-hosted runner.
+# Trigger manually, then grab the tmate ssh string from the job log.
+
+on:
+  workflow_dispatch:
+    inputs:
+      download_iso:
+        description: "Download the Qubes ISO during staging (8GB)"
+        type: boolean
+        default: true
+
+jobs:
+  shell:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 360
+    steps:
+      - name: Maximize build space (merged LVM on / + /mnt -> /work)
+        uses: easimon/maximize-build-space@v10
+        with:
+          root-reserve-mb: 4096
+          build-mount-path: /work
+          remove-android: 'true'
+          remove-dotnet: 'true'
+          remove-haskell: 'true'
+          remove-codeql: 'true'
+          remove-docker-images: 'true'
+
+      - uses: actions/checkout@v4
+        with:
+          path: repo
+
+      - name: Probe runner (SKU, CPU, KVM, disk)
+        run: |
+          echo "== Azure IMDS =="
+          curl -s -H Metadata:true \
+            "http://169.254.169.254/metadata/instance/compute?api-version=2021-02-01" \
+            | jq '{vmSize, sku, offer, location}' || true
+          echo "== CPU =="
+          grep -m1 "model name" /proc/cpuinfo
+          grep -m1 -oE "vmx|svm" /proc/cpuinfo || echo "NO nested virt flags!"
+          echo "== KVM =="
+          ls -l /dev/kvm
+          echo "== Disk =="
+          df -h / /work
+          free -g
+
+      - name: Install QEMU
+        run: |
+          sudo apt-get -qq update
+          sudo apt-get -qq install -y qemu-system-x86 qemu-utils ovmf socat
+          qemu-system-x86_64 --version | head -1
+
+      - name: Stage experiment in /work
+        if: ${{ inputs.download_iso }}
+        run: repo/ci/stage.sh /work
+
+      - name: Interactive shell (tmate)
+        uses: mxschmitt/action-tmate@v3
+        with:
+          limit-access-to-actor: true
