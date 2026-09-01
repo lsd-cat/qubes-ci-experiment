@@ -11,3 +11,4 @@ Formatting 'qubes.qcow2', fmt=qcow2 cluster_size=65536 extended_l2=off compressi
 [13:13:25] PHASE1 install starting (cpu: AuthenticAMD)
 [13:18:43] install running t=300s
 [13:23:55] install running t=600s
+[13:24:47] PHASE1 done in 640s (qemu exited => kickstart poweroff)
