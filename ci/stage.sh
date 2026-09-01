@@ -8,12 +8,16 @@ CI_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 cd "$WORK"
 
-# --- ISO ---
-if [ ! -f qubes.iso ]; then
-  echo ">> downloading ISO (~8GB)"
-  curl -sL -o qubes.iso "$ISO_URL"
+# --- ISO (resumable) ---
+iso_ok() {
+  curl -sL "$ISO_URL.DIGESTS" | grep -E "^[0-9a-f]{64} " | sed 's| .*| qubes.iso|' | sha256sum -c - >/dev/null 2>&1
+}
+if ! iso_ok; then
+  echo ">> downloading ISO (~8GB, resuming if partial)"
+  curl -sL -C - --retry 10 --retry-all-errors -o qubes.iso "$ISO_URL"
+  iso_ok || { echo "ISO digest mismatch"; exit 1; }
 fi
-curl -sL "$ISO_URL.DIGESTS" | grep -E "^[0-9a-f]{64} " | sed 's| .*| qubes.iso|' | sha256sum -c -
+echo ">> ISO verified"
 
 # --- target disk (sparse) ---
 [ -f qubes.qcow2 ] || qemu-img create -f qcow2 qubes.qcow2 80G

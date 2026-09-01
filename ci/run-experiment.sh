@@ -46,6 +46,12 @@ open_serial() {  # background bidirectional serial client: FIFO -> socket -> $SE
   sleep 2
 }
 
+# ---------- phase 0: ensure staging (idempotent, resumable) ----------
+log "PHASE0 staging"
+"$CI_DIR/stage.sh" "$WORK" >> "$LOG" 2>&1 || { log "RESULT: FAIL staging"; push_results "FAIL staging"; exit 1; }
+log "PHASE0 done"
+push_results "phase0 done"
+
 # ---------- phase 1: unattended install ----------
 log "PHASE1 install starting (cpu: $(grep -m1 -oE 'GenuineIntel|AuthenticAMD' /proc/cpuinfo))"
 push_results "phase1 start"
