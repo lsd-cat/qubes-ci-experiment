@@ -1,0 +1,18 @@
+qemu-system-x86_64: warning: host doesn't support requested feature: CPUID.80000001H:ECX.perfctr-core [bit 23]
+qemu-system-x86_64: warning: host doesn't support requested feature: CPUID.80000008H:EBX.wbnoinvd [bit 9]
+qemu-system-x86_64: warning: host doesn't support requested feature: CPUID.80000008H:EBX.ibpb [bit 12]
+qemu-system-x86_64: warning: host doesn't support requested feature: CPUID.80000008H:EBX.amd-stibp [bit 15]
+qemu-system-x86_64: warning: host doesn't support requested feature: CPUID.80000001H:ECX.perfctr-core [bit 23]
+qemu-system-x86_64: warning: host doesn't support requested feature: CPUID.80000008H:EBX.wbnoinvd [bit 9]
+qemu-system-x86_64: warning: host doesn't support requested feature: CPUID.80000008H:EBX.ibpb [bit 12]
+qemu-system-x86_64: warning: host doesn't support requested feature: CPUID.80000008H:EBX.amd-stibp [bit 15]
+qemu-system-x86_64: warning: host doesn't support requested feature: CPUID.80000001H:ECX.perfctr-core [bit 23]
+qemu-system-x86_64: warning: host doesn't support requested feature: CPUID.80000008H:EBX.wbnoinvd [bit 9]
+qemu-system-x86_64: warning: host doesn't support requested feature: CPUID.80000008H:EBX.ibpb [bit 12]
+qemu-system-x86_64: warning: host doesn't support requested feature: CPUID.80000008H:EBX.amd-stibp [bit 15]
+qemu-system-x86_64: warning: host doesn't support requested feature: CPUID.80000001H:ECX.perfctr-core [bit 23]
+qemu-system-x86_64: warning: host doesn't support requested feature: CPUID.80000008H:EBX.wbnoinvd [bit 9]
+qemu-system-x86_64: warning: host doesn't support requested feature: CPUID.80000008H:EBX.ibpb [bit 12]
+qemu-system-x86_64: warning: host doesn't support requested feature: CPUID.80000008H:EBX.amd-stibp [bit 15]
+[W][00828.471708] pw.conf      | [          conf.c: 1031 try_load_conf()] can't load config client.conf: No such file or directory
+[E][00828.471778] pw.conf      | [          conf.c: 1060 pw_conf_load_conf_for_context()] can't load config client.conf: No such file or directory

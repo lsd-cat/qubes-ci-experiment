@@ -9,3 +9,4 @@ Formatting 'qubes.qcow2', fmt=qcow2 cluster_size=65536 extended_l2=off compressi
    socat -,raw,echo=0 UNIX-CONNECT:/work/serial.sock
 [13:13:13] PHASE0 done
 [13:13:25] PHASE1 install starting (cpu: AuthenticAMD)
+[13:18:43] install running t=300s
