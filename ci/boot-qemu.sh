@@ -35,10 +35,14 @@ if [ "$MODE" = install ]; then
     cp /tmp/isomnt/images/pxeboot/{xen.gz,vmlinuz,initrd.img} .
     sudo umount /tmp/isomnt
   fi
+  # QEMU's multiboot loader can't see through gzip: feed it the raw ELF
+  if [ ! -f xen.elf ]; then
+    zcat xen.gz > xen.elf
+  fi
   exec qemu-system-x86_64 "${COMMON[@]}" \
     -drive file=ks.img,if=virtio,format=raw \
     -cdrom qubes.iso \
-    -kernel xen.gz \
+    -kernel xen.elf \
     -append "console=com1 com1=115200,8n1 noreboot" \
     -initrd "vmlinuz console=tty0 console=hvc0 inst.repo=hd:LABEL=QUBES-R4-3-1-X86-64 inst.ks=hd:LABEL=KS:/ks.cfg,initrd.img" \
     -no-reboot
