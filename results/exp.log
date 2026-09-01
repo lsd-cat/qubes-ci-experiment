@@ -1,0 +1,10 @@
+[13:05:15] PHASE0 staging
+>> downloading ISO (~8GB, resuming if partial)
+>> ISO verified
+Formatting 'qubes.qcow2', fmt=qcow2 cluster_size=65536 extended_l2=off compression_type=zlib size=85899345920 lazy_refcounts=off refcount_bits=16
+
+>> staged in /work. Boot the installer with:
+   /home/runner/work/qubes-ci-experiment/qubes-ci-experiment/repo/ci/boot-qemu.sh /work install
+>> then connect to the serial console:
+   socat -,raw,echo=0 UNIX-CONNECT:/work/serial.sock
+[13:13:13] PHASE0 done
