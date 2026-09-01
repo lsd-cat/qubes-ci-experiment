@@ -71,6 +71,10 @@ while kill -0 $QPID 2>/dev/null; do
   [ $t -ge 7200 ] && { log "RESULT: FAIL install timeout"; push_results "FAIL install timeout"; exit 1; }
 done
 kill $SERIAL_PID 2>/dev/null
+if [ $t -lt 60 ]; then
+  log "qemu exited suspiciously fast; qemu-install.log follows:"
+  tail -c 2000 "$WORK/qemu-install.log" >> "$LOG"
+fi
 grep -q "Kernel panic\|dracut-initqueue.*timeout" "$SER" && { log "RESULT: FAIL install crashed"; push_results "FAIL install crashed"; exit 1; }
 log "PHASE1 done in ${t}s (qemu exited => kickstart poweroff)"
 push_results "phase1 done"

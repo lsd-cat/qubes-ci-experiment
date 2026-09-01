@@ -1,0 +1,76 @@
+name: qubes-experiment
+# Fully automatic: stage ISO -> kickstart install -> boot -> template -> start PVH qube.
+# Progress lands on the `results` branch (results/exp.log) while running;
+# full logs are uploaded as artifacts; optionally opens a debug shell at the end.
+
+on:
+  workflow_dispatch:
+    inputs:
+      debug_shell:
+        description: "Open an upterm shell after the experiment (success or failure)"
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+
+jobs:
+  experiment:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 330
+    steps:
+      - name: Maximize build space (merged LVM -> /work)
+        uses: easimon/maximize-build-space@v10
+        with:
+          root-reserve-mb: 4096
+          build-mount-path: /work
+          remove-android: 'true'
+          remove-dotnet: 'true'
+          remove-haskell: 'true'
+          remove-codeql: 'true'
+          remove-docker-images: 'true'
+
+      - uses: actions/checkout@v4
+        with:
+          path: repo
+
+      - name: Probe runner (SKU, CPU, KVM)
+        run: |
+          curl -s -H Metadata:true \
+            "http://169.254.169.254/metadata/instance/compute?api-version=2021-02-01" \
+            | jq '{vmSize, sku}' || true
+          grep -m1 "model name" /proc/cpuinfo
+          ls -l /dev/kvm; free -g; df -h /work
+
+      - name: Install QEMU + tools
+        run: |
+          sudo apt-get -qq update
+          sudo apt-get -qq install -y qemu-system-x86 qemu-utils socat netcat-openbsd
+
+      - name: Run experiment
+        timeout-minutes: 240
+        run: repo/ci/run-experiment.sh /work
+
+      - name: Verdict
+        if: always()
+        run: grep "RESULT:" /work/exp.log || echo "no verdict recorded"
+
+      - name: Upload logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: qubes-experiment-logs
+          path: |
+            /work/exp.log
+            /work/stage.log
+            /work/serial.log
+            /work/qemu-install.log
+            /work/qemu-run.log
+          if-no-files-found: ignore
+
+      - name: Debug shell (upterm)
+        if: ${{ always() && inputs.debug_shell }}
+        uses: lhotari/action-upterm@v1
+        with:
+          limit-access-to-actor: true
+          wait-timeout-minutes: 60

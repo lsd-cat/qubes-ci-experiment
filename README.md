@@ -7,7 +7,15 @@ deployment under Proxmox/KVM (Zen4 host); the open question on GHA is the extra
 nesting level: Azure hypervisor → runner VM → our KVM → Xen → qubes. PV dom0 will
 boot; whether PVH/HVM qubes start is what we're here to find out.
 
-## Run it
+## Run it (automatic)
+
+Actions -> **qubes-experiment** -> Run workflow. It does everything unattended and:
+- streams progress to the `results` branch (`results/exp.log`) while running,
+- prints the `RESULT:` verdict in the job log and uploads all logs as artifacts,
+- with `debug_shell: true`, ends with an upterm session on the still-warm runner
+  (QEMU may still be running; serial socket at `/work/serial.sock`).
+
+## Run it (interactive)
 
 1. Actions → **debug-shell** → Run workflow (`download_iso: true`).
 2. The job maximizes disk (~100GB at `/work`), probes the runner (Azure `vmSize`,
