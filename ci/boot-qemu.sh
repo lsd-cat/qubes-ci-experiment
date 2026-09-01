@@ -8,6 +8,7 @@
 set -euo pipefail
 WORK="${1:?workdir}"; MODE="${2:?install|run}"
 cd "$WORK"
+sudo chmod 666 /dev/kvm 2>/dev/null || true
 
 # CPU flags: the exact models matter (see README pitfalls)
 if grep -q GenuineIntel /proc/cpuinfo; then
