@@ -12,3 +12,5 @@ Formatting 'qubes.qcow2', fmt=qcow2 cluster_size=65536 extended_l2=off compressi
 [13:18:43] install running t=300s
 [13:23:55] install running t=600s
 [13:24:47] PHASE1 done in 640s (qemu exited => kickstart poweroff)
+[13:24:58] PHASE2 booting installed system
+[13:35:05] RESULT: FAIL no LUKS prompt
